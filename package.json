@@ -1,0 +1,17 @@
+{
+  "name": "ft_linear_regression",
+  "version": "1.0.0",
+  "description": "School project",
+  "main": "index.js",
+  "dependencies": {
+    "csv-parser": "^1.7.0",
+    "ejs": "^2.3.4",
+    "express": "^4.13.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

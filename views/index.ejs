@@ -1,0 +1,56 @@
+<html>
+<header>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" href="./style.css"/>
+    <style>
+
+        .grow-wrapper{
+            height: 300px;
+            width: 300px;
+            overflow: hidden;
+
+        }
+
+        .grow{
+            height: 300px;
+            width: 300px;
+            -webkit-transition: all 1s ease;
+            -moz-transition: all 1s ease;
+            -o-transition: all 1s ease;
+            -ms-transition: all 1s ease;
+            transition: all 1s ease;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        .grow:hover{
+            width: 400px;
+            height: 400px;
+        }
+    </style>
+</header>
+
+<body>
+
+    <div class="grow-wrapper">
+        <img class="grow" src="https://media.giphy.com/media/fCW2UX3T0tqtq/giphy.gif" alt=""/>
+    </div>
+
+    <canvas id="graph"></canvas>
+
+</body>
+<script src="Chart.js"></script>
+<script src="./index.js"></script>
+<script>
+    (function(){
+        'use strict';
+
+        var data = <%- JSON.stringify(data) %>;
+        var graph = document.getElementById("graph").getContext("2d");
+        new Chart(graph).Line(data, {
+            responsive: true
+        });
+
+    })()
+</script>
+</html>
