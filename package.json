@@ -6,7 +6,8 @@
   "dependencies": {
     "csv-parser": "^1.7.0",
     "ejs": "^2.3.4",
-    "express": "^4.13.3"
+    "express": "^4.13.3",
+    "open": "0.0.5"
   },
   "devDependencies": {},
   "scripts": {

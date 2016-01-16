@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var fs = require('fs');
 var csv = require('csv-parser');
+var open = require('open');
 
 app.set('view engine', 'ejs');
 
@@ -30,7 +31,7 @@ app.get('/', function(req, res) {
     fs.createReadStream('data.csv')
         .pipe(csv())
         .on('data', function(data) {
-            console.log('row', data);
+            //console.log('row', data);
             labels.push(data.km.toString());
             values.push(data.price);
         })
@@ -44,3 +45,5 @@ app.get('/', function(req, res) {
 app.listen(4200);
 
 console.log('Server running at http://127.0.0.1:4200/');
+
+open("http://127.0.0.1:4200");
