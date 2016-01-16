@@ -9,7 +9,9 @@
     "express": "^4.13.3",
     "open": "0.0.5"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "prompt": "^0.2.14"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
