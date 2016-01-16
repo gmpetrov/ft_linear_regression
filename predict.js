@@ -4,6 +4,7 @@ var prompt = require('prompt');
 var filename = "thetas.json"
 
 fs.readFile(filename, 'utf8', (err, data) => {
+
   if (err) throw err;
 
   var thetas = JSON.parse(data);
@@ -26,5 +27,5 @@ fs.readFile(filename, 'utf8', (err, data) => {
 });
 
 function hypothesis(x, t0, t1){
-	return parseInt(t0) + (parseInt(t1) * x);
+	return t0 + (t1 * x);
 }
