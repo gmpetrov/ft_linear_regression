@@ -3,7 +3,6 @@ var csv = require('csv-parser');
 var filename = "thetas.json"
 
 try {
-
 	// Read the file containing the trained thetas
 	var data = fs.readFileSync("thetas.json", 'utf8');
 
@@ -49,8 +48,10 @@ var Gradient = {
 		var tmpT0 = 1;
     	var tmpT1 = 1;
 
+    	// scale - normalize the data
     	this._featureScaling();
 
+		// To understand the below computations, you can read : https://www.coursera.org/learn/machine-learning/supplement/Mc0tF/linear-regression-with-one-variable
     	// While the thetas do not converge
 		while(Math.abs(tmpT1) > 0.001 && Math.abs(tmpT0) > 0.001){
 
@@ -118,12 +119,12 @@ var Gradient = {
 
 
 //	Save the trained thetas into a file in the current dir
-
 function saveThetas(thetas){
+
 	fs.writeFile(filename, JSON.stringify(thetas, null, 4), function(err){
-		if (err){
-			return console.log(err);
-		}
+
+		if (err){ return console.log(err); }
+
 		console.log("Thetas saved in " + __dirname + "/" + filename);
 	});
 }

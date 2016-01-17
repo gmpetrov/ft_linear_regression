@@ -9,56 +9,45 @@ app.set('view engine', 'ejs');
 app.use(express.static("views"));
 
 fs.readFile('thetas.json', 'utf8', (err, data) => {
+
 	if (err) throw err;
-
-	var thetas = JSON.parse(data);
-	console.log("THETAS : ", thetas);
-
-	var t0 = parseFloat(thetas.t0);
-	var t1 = parseFloat(thetas.t1);
-
-	var regression = [];
-
-	var data = {
-		labels : [],
-			datasets : [
-		{
-			fillColor : "rgba(172,194,132,0)",
-			strokeColor : "rgba(67, 76, 43, 0)",
-			pointColor : "#fff",
-			pointStrokeColor : "#9DB86D",
-			data : []
-		},
-		{
-			label : "Thetas",
-			fillColor: "rgba(0, 0, 0, 0)",
-			strokeColor: "#f00",
-			data : regression
-		}
-	]
-	};
 
 	app.get('/', function(req, res) {
 
-		var labels = [];
-		var values = [];
+		// Array that will contains the csv dataset
+		var points = [];
 
 		fs.createReadStream('data.csv')
 			.pipe(csv())
 			.on('data', function(data) {
-				//console.log('row', data);
-				labels.push(data.km.toString());
-				values.push(data.price);
+
+				points.push({ x : parseInt(data.km), y : parseInt(data.price) });
+
 			})
 			.on('end', function(){
-				data.labels = labels.sort(function(a, b){ return a - b; }).reverse();
-				data.datasets[0].data = values.sort(function(a, b){ return a - b; }).reverse();
 
-				for (var i = 0; i < data.labels.length; i++){
-					regression.push(hypothesis(data.labels[i], t0, t1));
-				}
+				// Read the file containing the theta's
+				var data = fs.readFileSync("thetas.json", 'utf8');
 
-				res.render('index', { data: data });
+				// Get the thetas
+				var thetas = JSON.parse(data);
+
+				var ar = [];
+
+				// get the x set
+				for (var i = 0; i < points.length; i++){ ar.push(points[i].x); }
+
+				// get min and max values of the set
+				var minMaxValues = getMinMax(ar);
+				var min = minMaxValues.min;
+				var max = minMaxValues.max;
+
+				// create object containing datas for rendering the regression line
+				var regeressionPoints = { 'x0' : min, 'y0' : hypothesis(min, thetas.t0, thetas.t1), 'x1' : max, 'y1' : hypothesis(max, thetas.t0, thetas.t1) }
+
+				// Render the page
+				res.render('index', { 'data': { 'points' : points, 'regressionPoints' : regeressionPoints } });
+
 			});
 	});
 
@@ -70,6 +59,36 @@ fs.readFile('thetas.json', 'utf8', (err, data) => {
 
 });
 
+// Estimation function
 function hypothesis(x, t0, t1){
 	return t0 + (t1 * x);
+}
+
+// Return an array containing all values between a and b
+function range(a, b){
+
+	if (a >= b) { throw "Fuck"; }
+
+	var ar = [];
+
+	for (var i = a; i <= b; i++){ ar.push(i); }
+
+	return ar;
+}
+
+// get min and max value from a given array
+function getMinMax(ar){
+
+	if (ar.length < 1) { throw "Empty array"; }
+
+	var min = ar[0];
+	var max = ar[0];
+
+	for (var i = 0; i < ar.length; i++){
+		if (ar[i] < min){ min = ar[i]; }
+
+		if (ar[i] > max) { max = ar[i] }
+	}
+
+	return { 'min' : min, 'max' : max };
 }

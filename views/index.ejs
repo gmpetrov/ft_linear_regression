@@ -2,54 +2,56 @@
 <header>
     <meta charset="utf-8"/>
     <link rel="stylesheet" href="./style.css"/>
+    <link href='https://fonts.googleapis.com/css?family=Indie+Flower|Titillium+Web' rel='stylesheet' type='text/css'>
     <style>
 
-        .grow-wrapper{
-            height: 300px;
-            width: 300px;
-            overflow: hidden;
-
+        html{
+            font-family: 'Titillium Web', sans-serif !important;
         }
 
-        .grow{
-            height: 300px;
-            width: 300px;
-            -webkit-transition: all 1s ease;
-            -moz-transition: all 1s ease;
-            -o-transition: all 1s ease;
-            -ms-transition: all 1s ease;
-            transition: all 1s ease;
-            background-size: cover;
-            background-repeat: no-repeat;
+        #box_licenseText{
+            display: none !important;
         }
 
-        .grow:hover{
-            width: 400px;
-            height: 400px;
+        .JXGtext, #box_navigationbar{
+            color: #95a5a6 !important;
         }
+
     </style>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jsxgraph/0.99.3/jsxgraphcore.js"></script>
 </header>
 
 <body>
 
-    <!--<div class="grow-wrapper">-->
-        <!--<img class="grow" src="https://media.giphy.com/media/fCW2UX3T0tqtq/giphy.gif" alt=""/>-->
-    <!--</div>-->
+<div id="box" class="jxgbox" style="width: 100%; height: 100%;"></div>
 
-    <canvas id="graph"></canvas>
 
 </body>
-<script src="Chart.js"></script>
 <script src="./index.js"></script>
 <script>
     (function(){
         'use strict';
 
+        // Get data send by server
         var data = <%- JSON.stringify(data) %>;
-        var graph = document.getElementById("graph").getContext("2d");
-        new Chart(graph).Line(data, {
-            responsive: true
-        });
+
+        var points = data.points
+        var regressionPoints = data.regressionPoints;
+
+        // Init jsxgraph board
+        var board = JXG.JSXGraph.initBoard('box', {boundingbox: [20000, 9000, 250000, 3000],axis:true});
+
+        // Create two points needed for the regression line
+        board.create('point', [regressionPoints.x0, regressionPoints.y0], { name:'A',size: 1, color: "#e74c3c"} );
+        board.create('point', [regressionPoints.x1, regressionPoints.y1], { name:'B',size: 1, color: "#e74c3c"} );
+
+        // draw the line
+        board.create('line', ["A", "B"] , { strokeColor:'#e74c3c', strokeWidth: 2 });
+
+        // draw all points from the dataset
+        for (var i = 0; i < points.length; i++){
+            board.create('point',[points[i].x, points[i].y], {face:'o', size:2, color: "#16a085"});
+        }
 
     })()
 </script>
